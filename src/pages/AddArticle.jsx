@@ -56,7 +56,7 @@ const AddArticle = () => {
             value={form.title}
             onChange={handleChange}
             onInput={autoResize}
-            className="w-full mb-4 py-3 px-6 border-gray-300 text-3xl outline-none focus:border-l font-heading font-semibold resize-none leading-relaxed"
+            className="w-full mb-4 py-3 px-6 border-gray-300 text-3xl md:text-4xl outline-none focus:border-l font-semibold resize-none leading-relaxed font-article"
           ></textarea>
 
           <textarea
@@ -65,7 +65,7 @@ const AddArticle = () => {
             value={form.content}
             onChange={handleChange}
             onInput={autoResize}
-            className="w-full mb-4 py-3 px-6 border-gray-300 outline-none focus:border-l resize-none"
+            className="w-full mb-4 py-3 px-6 border-gray-300 outline-none focus:border-l resize-none font-article"
           ></textarea>
 
           {error && (

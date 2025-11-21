@@ -130,7 +130,9 @@ const Article = () => {
         </div>
 
         <div className="">
-          <p className="text-xl whitespace-pre-wrap">{article.content}</p>
+          <p className="text-xl whitespace-pre-wrap font-article">
+            {article.content}
+          </p>
 
           <div className="border-b border-gray-300 pb-9 mt-20 flex items-center gap-8">
             <p
@@ -163,7 +165,7 @@ const Article = () => {
           <div className="mt-15 space-y-18">
             {article.comments && article.comments.length > 0 ? (
               [...article.comments]
-                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // DESCENDING ORDER
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
                 .map((comment) => (
                   <div
                     key={comment.id}
