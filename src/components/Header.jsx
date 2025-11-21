@@ -1,9 +1,7 @@
-// src/components/SignIn.jsx
 import React, { useEffect, useState } from "react";
 import { auth, signInWithGoogle, logout } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { LogOut } from "lucide-react";
-
 import GoogleIcon from "../assets/google.png";
 import { backend } from "../api/client";
 
@@ -11,12 +9,12 @@ const Header = () => {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const user_id = user ? user.uid : null;
+  const [authChecked, setAuthChecked] = useState(false); // ✅ NEW
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setAuthChecked(true); // Firebase has finished checking
     });
 
     return () => unsubscribe();
@@ -24,26 +22,32 @@ const Header = () => {
 
   useEffect(() => {
     const loadProfile = async () => {
-      if (!user) return;
+      if (!authChecked) return; // Wait for Firebase
+      if (!user) return; // User is not logged in
+
       setLoading(true);
 
       try {
-        const token = await user.getIdToken(); // Firebase token
-        const res = await backend.getCurrentUserProfile(token); // call /profile/me
+        const token = await user.getIdToken();
+        const res = await backend.getCurrentUserProfile(token);
         setProfile(res);
       } catch (err) {
-        console.error("Error fetching user profile:", err);
+        console.error("Error fetching profile:", err);
       } finally {
         setLoading(false);
       }
     };
 
     loadProfile();
-  }, [user]);
+  }, [authChecked, user]);
 
-  if (loading)
+  // UI states
+  if (!authChecked)
+    return <p className="flex items-center justify-center">Loading...</p>;
+
+  if (user && !profile)
     return (
-      <p className="flex items-center justify-center">Loading...</p>
+      <p className="flex items-center justify-center">Loading profile...</p>
     );
 
   return (
@@ -55,7 +59,7 @@ const Header = () => {
             onClick={signInWithGoogle}
             className="px-4 py-2 bg-dark hover:bg-dark/90 text-white font-medium rounded-full flex items-center gap-2 transition-all cursor-pointer"
           >
-            <img src={GoogleIcon} alt="Google icon" className="w-8" />
+            <img src={GoogleIcon} alt="Google" className="w-8" />
             Sign In
           </button>
         </div>
@@ -65,7 +69,7 @@ const Header = () => {
             <img
               src={profile.image_url}
               alt=""
-              className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg- border"
+              className="w-10 h-10 lg:w-12 lg:h-12 rounded-full border"
             />
             <span className="font-medium text-lg md:text-xl font-heading">
               {profile.name}
