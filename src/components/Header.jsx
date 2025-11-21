@@ -14,7 +14,7 @@ const Header = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setAuthChecked(true); // Firebase has finished checking
+      setAuthChecked(true);
     });
 
     return () => unsubscribe();
@@ -22,8 +22,8 @@ const Header = () => {
 
   useEffect(() => {
     const loadProfile = async () => {
-      if (!authChecked) return; // Wait for Firebase
-      if (!user) return; // User is not logged in
+      if (!authChecked) return;
+      if (!user) return; 
 
       setLoading(true);
 

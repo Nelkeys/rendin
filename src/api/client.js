@@ -30,10 +30,6 @@ class BackendService {
     return this.handleRequest(this.api.post("/auth/sync-user"));
   }
 
-  async testToken() {
-    return this.handleRequest(this.api.get("/auth/test"));
-  }
-
   // Articles
   async createArticle({ title, content }) {
     return this.handleRequest(this.api.post("/articles/", { title, content }));

@@ -10,4 +10,5 @@
 
 body{
     font-family: var(--font-default);
+    user-select: none;
 }

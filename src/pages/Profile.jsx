@@ -15,6 +15,14 @@ const Profile = () => {
       setLoading;
       try {
         const res = await backend.getUserProfile(user_id);
+
+        // Sort articles newest → oldest
+        if (res.articles) {
+          res.articles = res.articles.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+        }
+
         setProfile(res);
       } catch (err) {
         console.error("Error fetching user profile:", err);
@@ -53,12 +61,12 @@ const Profile = () => {
     );
 
   return (
-    <div className="px-6">
+    <div className="px-6 py-10">
       {profile && (
         <div className="max-w-2xl mx-auto mt-15">
           <div className="flex flex-col items-center gap-4">
             <img
-              className="rounded-full object-cover border"
+              className="h-25 w-25 rounded-full object-cover border"
               src={profile.image_url}
               alt={profile.name}
             />

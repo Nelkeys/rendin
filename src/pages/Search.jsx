@@ -13,7 +13,6 @@ const Search = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState(initialQuery);
- 
 
   // fetch related article from search query
   useEffect(() => {
@@ -22,6 +21,11 @@ const Search = () => {
 
       try {
         const res = await backend.search(query);
+
+        const sorted = res.sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
+
         setArticles(res);
       } catch (error) {
         console.error("Error fetching search results:", error);
@@ -34,7 +38,6 @@ const Search = () => {
       fetchArticles();
     }
   }, [query]);
-
 
   // HELPERS
   const truncateContent = (content) => {
@@ -52,9 +55,9 @@ const Search = () => {
 
   return (
     <div>
-      <SearchBar query={query} setQuery={setQuery}/>
+      <SearchBar query={query} setQuery={setQuery} />
 
-      <div className="px-6">
+      <div className="px-6 py-10">
         <div className="max-w-2xl mx-auto mt-15 space-y-15">
           {articles.map((article) => (
             <div key={article.id} className="space-y-4">
@@ -65,7 +68,10 @@ const Search = () => {
                   alt={article.author_name}
                 />
                 <div>
-                  <Link to={`/profile/${article.author_id}`} className="font-medium hover:text-primary cursor-pointer max-w-fit font-heading">
+                  <Link
+                    to={`/profile/${article.author_id}`}
+                    className="font-medium hover:text-primary cursor-pointer max-w-fit font-heading"
+                  >
                     {article.author_name}
                   </Link>
                   <p className="text-sm text-gray-600">
