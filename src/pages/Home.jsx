@@ -1,9 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+import Icon from "../assets/icon.png";
+
 const Home = () => {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
+  const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    const msg = localStorage.getItem("successMsg");
+
+    if (msg) {
+      setSuccess(msg);
+
+      setTimeout(() => {
+        setSuccess("");
+        localStorage.removeItem("successMsg");
+      }, 4000);
+    }
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -11,13 +27,19 @@ const Home = () => {
     if (query.trim() !== "") {
       navigate(`/search?q=${encodeURIComponent(query)}`);
     }
-  }
+  };
 
   return (
     <div className="px-6 h-[65vh]">
+      {success && (
+        <p className="text-center bg-primary text-white py-2 px-4 rounded-md my-4 fixed bottom-10 left-10 max-w-fit">
+          {success}
+        </p>
+      )}
+
       <div className="max-w-2xl mx-auto space-y-10 h-full flex flex-col items-center justify-center">
-        <div className="flex items-center justify-center flex-col gap-4">
-          <div className="h-15 w-8 md:h-20 md:w-10 bg-primary"></div>
+        <div className="flex items-end justify-center gap-4 cursor-pointer">
+          <img className="w-12 md:w-13 lg:w-15" src={Icon} alt="app icon" />
           <h1 className="text-4xl lg:text-5xl font-semibold font-heading">
             Rend<span className="text-primary">In</span>.
           </h1>

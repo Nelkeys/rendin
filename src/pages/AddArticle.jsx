@@ -32,8 +32,12 @@ const AddArticle = () => {
     try {
       setLoading(true);
       await backend.createArticle(form);
-      setSuccess("Article published successfully!");
+
+      // Save message to localStorage
+      localStorage.setItem("successMsg", "Article published successfully!");
+
       setForm({ title: "", content: "" });
+
       navigate("/");
     } catch (err) {
       setError(err.message || "Failed to publish article.");

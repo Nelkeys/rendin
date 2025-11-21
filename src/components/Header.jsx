@@ -9,7 +9,8 @@ const Header = () => {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [authChecked, setAuthChecked] = useState(false); // ✅ NEW
+  const [authChecked, setAuthChecked] = useState(false);
+  const [profileError, setProfileError] = useState(false); // ✅ NEW
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -23,9 +24,16 @@ const Header = () => {
   useEffect(() => {
     const loadProfile = async () => {
       if (!authChecked) return;
-      if (!user) return; 
+
+      // If unauthenticated → nothing to fetch
+      if (!user) {
+        setProfile(null);
+        setLoading(false);
+        return;
+      }
 
       setLoading(true);
+      setProfileError(false);
 
       try {
         const token = await user.getIdToken();
@@ -33,6 +41,8 @@ const Header = () => {
         setProfile(res);
       } catch (err) {
         console.error("Error fetching profile:", err);
+        setProfileError(true); // profile failed
+        setProfile(null); // clear profile
       } finally {
         setLoading(false);
       }
@@ -43,16 +53,34 @@ const Header = () => {
 
   // UI states
   if (!authChecked)
-    return <p className="flex items-center justify-center">Loading...</p>;
+    return <p className="flex items-center justify-center"></p>;
 
-  if (user && !profile)
+  // If profile failed → act like user is signed out
+  if (profileError)
     return (
-      <p className="flex items-center justify-center">Loading profile...</p>
+      <div className="flex w-full px-6 lg:px-20 py-5">
+        <div className="flex justify-between w-full items-center">
+          <div></div>
+          <button
+            onClick={signInWithGoogle}
+            className="px-4 py-2 bg-dark hover:bg-dark/90 text-white font-medium rounded-full flex items-center gap-2 transition-all cursor-pointer"
+          >
+            <img src={GoogleIcon} alt="Google" className="w-8" />
+            Sign In
+          </button>
+        </div>
+      </div>
+    );
+
+  // If loading profile but user exists
+  if (user && !profile && !profileError)
+    return (
+      <p className="flex items-center justify-center"></p>
     );
 
   return (
     <div className="flex w-full px-6 lg:px-20 py-5">
-      {!user ? (
+      {!user || !profile ? (
         <div className="flex justify-between w-full items-center">
           <div></div>
           <button
@@ -69,7 +97,7 @@ const Header = () => {
             <img
               src={profile.image_url}
               alt=""
-              className="w-10 h-10 lg:w-12 lg:h-12 rounded-full border"
+              className="w-11 h-11 lg:w-12 lg:h-12 rounded-full border"
             />
             <span className="font-medium text-lg md:text-xl font-heading">
               {profile.name}

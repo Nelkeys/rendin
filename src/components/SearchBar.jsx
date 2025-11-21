@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+import Icon from "../assets/icon.png";
+
 const SearchBar = ({ query, setQuery }) => {
   const navigate = useNavigate();
 
@@ -24,7 +26,7 @@ const SearchBar = ({ query, setQuery }) => {
           onClick={goHome}
           className="flex items-end justify-center gap-4 cursor-pointer"
         >
-          <div className="h-15 w-8 md:h-20 md:w-10 bg-primary"></div>
+          <img className="w-12 md:w-13 lg:w-15" src={Icon} alt="app icon" />
           <h1 className="text-4xl lg:text-5xl font-semibold font-heading">
             Rend<span className="text-primary">In</span>.
           </h1>
