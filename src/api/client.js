@@ -83,8 +83,12 @@ class BackendService {
   }
 
   // Profile
-  async getUserProfile(userId) {
-    return this.handleRequest(this.api.get(`/profile/${userId}`));
+  async getUserProfile(user_id) {
+    return this.handleRequest(this.api.get(`/users/${user_id}`));
+  }
+
+  async getCurrentUserProfile() {
+    return this.handleRequest(this.api.get(`/users/profile/me`));
   }
 }
 

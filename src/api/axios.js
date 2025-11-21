@@ -11,7 +11,7 @@ api.interceptors.request.use(async (config) => {
   if (currentUser) {
     try {
       const token = await auth.currentUser.getIdToken(true);
-      console.log("Fresh token:", token);
+      //console.log("Fresh token:", token);
       config.headers.Authorization = `Bearer ${token}`;
     } catch (error) {
       console.error("Error fetching Firebase token:", error);

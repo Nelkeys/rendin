@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { backend } from "../api/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+
+import SearchBar from "../components/SearchBar";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -8,13 +10,10 @@ const Search = () => {
   const initialQuery =
     new URLSearchParams(window.location.search).get("q") || "";
 
-  const [query, setQuery] = useState(initialQuery);
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const goHome = () => {
-    navigate("/");
-  };
+  const [query, setQuery] = useState(initialQuery);
+ 
 
   // fetch related article from search query
   useEffect(() => {
@@ -36,17 +35,6 @@ const Search = () => {
     }
   }, [query]);
 
-  // Test
-  //console.log("Search articles:", articles);
-
-  // Handle Search
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (query.trim() !== "") {
-      navigate(`/search?q=${encodeURIComponent(query)}`);
-    }
-  };
 
   // HELPERS
   const truncateContent = (content) => {
@@ -58,48 +46,28 @@ const Search = () => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
+      year: "numeric",
     });
   };
 
   return (
     <div>
-      <div className="px-6 mt-5">
-        <div className="max-w-xl mx-auto space-y-6 lg:space-y-8 h-full flex flex-col items-center justify-center">
-          <div onClick={goHome} className="flex items-end justify-center gap-4 cursor-pointer">
-            <div className="h-15 w-8 md:h-20 md:w-10 bg-primary"></div>
-            <h1 className="text-4xl lg:text-5xl font-semibold font-heading">
-              Rend<span className="text-primary">In</span>.
-            </h1>
-          </div>
-
-          <div className="w-full">
-            <form onSubmit={handleSubmit} className="">
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search by topic or author."
-                className="w-full py-3 px-6 rounded-full bg-primary/5 border-2 border-gray-500 focus:outline-primary transition-all duration-300"
-              />
-            </form>
-          </div>
-        </div>
-      </div>
+      <SearchBar query={query} setQuery={setQuery}/>
 
       <div className="px-6">
-        <div className="max-w-xl mx-auto mt-15">
+        <div className="max-w-2xl mx-auto mt-15 space-y-15">
           {articles.map((article) => (
             <div key={article.id} className="space-y-4">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 leading-tight">
                 <img
                   className="w-10 h-10 bg-primary rounded-full"
                   src={article.author_image}
-                  alt=""
+                  alt={article.author_name}
                 />
                 <div>
-                  <h2 className="font-medium hover:text-primary cursor-pointer max-w-fit">
+                  <Link to={`/profile/${article.author_id}`} className="font-medium hover:text-primary cursor-pointer max-w-fit font-heading">
                     {article.author_name}
-                  </h2>
+                  </Link>
                   <p className="text-sm text-gray-600">
                     {formatDate(article.created_at)}
                   </p>
@@ -107,7 +75,10 @@ const Search = () => {
               </div>
 
               <div className="space-y-1">
-                <h2 className="font-medium hover:text-primary cursor-pointer max-w-fit">
+                <h2
+                  className="font-medium hover:text-primary cursor-pointer max-w-fit font-heading"
+                  onClick={() => navigate(`/article/${article.id}`)}
+                >
                   {article.title}
                 </h2>
                 <p className="text-base text-gray-600">

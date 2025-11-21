@@ -1,6 +1,11 @@
-// src/firebase.js
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  signOut 
+} from "firebase/auth";
+import { backend } from "./api/client";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -16,5 +21,19 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
 
-export const signInWithGoogle = () => signInWithPopup(auth, provider);
+
+export const signInWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+
+    const token = await result.user.getIdToken();
+
+    await backend.syncUser(token);
+
+    return result.user;
+  } catch (error) {
+    console.error("Google sign-in error:", error);
+  }
+};
+
 export const logout = () => signOut(auth);
