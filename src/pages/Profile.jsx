@@ -61,7 +61,7 @@ const Profile = () => {
     );
 
   return (
-    <div className="px-6 py-10">
+    <div className="px-6 pb-15">
       {profile && (
         <div className="max-w-2xl mx-auto mt-15">
           <div className="flex flex-col items-center gap-4">

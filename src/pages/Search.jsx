@@ -61,7 +61,7 @@ const Search = () => {
     <div>
       <SearchBar query={query} setQuery={setQuery} />
 
-      <div className="px-6 py-10">
+      <div className="px-6 pb-15">
         <div className="max-w-2xl mx-auto mt-15 space-y-15">
           {/* Loading State */}
           {loading && <p className="text-center text-gray-600">Loading...</p>}
